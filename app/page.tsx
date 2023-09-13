@@ -16,8 +16,8 @@ const HomePage = () => {
             
           <div space-y-2>
             <p className='infoText'>Explain Something to me</p>
-            <p className='infoText'>Occasionally generate incorrect information</p>
-            <p className='infoText'>Remembers what user said earlier in the conversation</p>
+            <p className='infoText'>Summarise documents and blog posts.</p>
+            <p className='infoText'>Write, debug and explain code.</p>
           </div>          
         </div>
 
@@ -28,8 +28,8 @@ const HomePage = () => {
           </div>
             
           <div space-y-2>
-            <p className='infoText'>Explain Something to me</p>
-            <p className='infoText'>Occasionally generate incorrect information</p>
+            <p className='infoText'>Language translation</p>
+            <p className='infoText'>Generate conversations and replies</p>
             <p className='infoText'>Remembers what user said earlier in the conversation</p>
           </div>          
         </div>
@@ -41,9 +41,9 @@ const HomePage = () => {
           </div>
             
           <div space-y-2>
-            <p className='infoText'>Explain Something to me</p>
+            <p className='infoText'>It can't multitask.</p>
             <p className='infoText'>Occasionally generate incorrect information</p>
-            <p className='infoText'>Remembers what user said earlier in the conversation</p>
+            <p className='infoText'>Knowledge base is limited to September 2021.</p>
           </div>          
         </div>
       </div>
