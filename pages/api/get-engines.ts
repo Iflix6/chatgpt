@@ -2,12 +2,12 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import openai from '../../lib/chatgpt'
 
 type Option = {
-    value: string
-    label: string
+    value: string;
+    label: string;
 }
 
 type Data = {
-    modelOptions: Option[]
+    modelOptions: Option[];
 }
 
 export default async function handler(
@@ -16,10 +16,10 @@ export default async function handler(
 ) {
     const models = await openai.listModels().then(res => res.data.data)
 
-    const modelOptions = models.map(item => ({
-        value: item.id,
-        label: item.id
-    }))
+    const modelOptions = models.map(model => ({
+        value: model.id,
+        label: model.id,
+    }));
 
-    return res.status(200).json({ modelOptions })
+    return res.status(200).json({ modelOptions, })
 }

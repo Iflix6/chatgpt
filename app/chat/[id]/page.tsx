@@ -1,7 +1,7 @@
 import HomePage from "@/app/page";
 import Chat from "@/components/Chat";
 import ChatInput from "@/components/ChatInput";
-import { type } from "os";
+
 
 type Props = {
   params: {

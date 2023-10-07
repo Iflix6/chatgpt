@@ -6,7 +6,8 @@ import { addDoc, collection, serverTimestamp, Timestamp } from 'firebase/firesto
 import { useSession } from 'next-auth/react';
 import React, { FormEvent, useState } from 'react';
 import { toast } from 'react-hot-toast'
-
+import ModelSelection from './ModelSelection';
+import useSWR from 'swr';
 
 
 type Props = {
@@ -14,25 +15,25 @@ type Props = {
 };
 
 const ChatInput: React.FC<Props> = ({ chatId }) => {
-    const [prompt, setPrompt] = useState('')
-    const { data: session } = useSession()
+    const [prompt, setPrompt] = useState("");
+    const { data: session } = useSession();
 
-    // TODO: useSWR to get model
-    const model = 'text-davinci-003'
-    // text-moderation-playground
-    // text-davinci-002-render-sha
-    
+    const { data: model } = useSWR('model', {
+        fallbackData: 'text-davinci-003'
+      })
+
+
 
     const sendMessage = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        if (!prompt) return
+        if (!prompt) return;
         
         // TOAST NOTIFICATION
-        const notification = toast.loading('ChatGPT is thinking...')
+        const notification = toast.loading('ChatGPT is thinking...');
 
 
-        const input = prompt.trim()
-        setPrompt('')
+        const input = prompt.trim();
+        setPrompt("");
 
         const message: Message = {
             text: input,
@@ -41,7 +42,7 @@ const ChatInput: React.FC<Props> = ({ chatId }) => {
             user: {
                 _id: session?.user?.email!,
                 name: session?.user?.name!,
-                avatar: session?.user?.image || `https://ui-avatars.com/api?name=${session?.user?.name}`
+                avatar: session?.user?.image! || `https://ui-avatars.com/api?name=${session?.user?.name}`,
             }
         }
 
@@ -49,32 +50,31 @@ const ChatInput: React.FC<Props> = ({ chatId }) => {
         await addDoc(
             collection(db, 'users', session?.user?.email!, 'chats', chatId, 'messages'),
             message
-        )
+        );
 
         // ASK QUESTION TO OPENAI
-        await fetch('/api/ask-question', {
+        await fetch('/api/askQuestion', {
             method: 'POST',
             headers: {
-                "Content-Type": 'application/json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                text: input,
+                prompt: input,
                 chatId,
                 model,
                 session,
-                timestamp: Timestamp.now()
-            })
+            }),
         }).then(() => {
             // TOAST NOTIFICATION TO SAY SUCCESS
             toast.success('ChatGPT has responded!', {
-                id: notification
+                id: notification,
             })
-        // }).catch((err) => {
-        //     toast.error(`Backend (Error: ${err.message})`, {
-        //         id: notification
-        //     })
-        })
-    }
+        }).catch((err) => {
+            toast.error(`Backend (Error: ${err.message})`, {
+                id: notification,
+            });
+        });
+    };
 
     return (
         <div className='mr-20 ml-20 mb-4 bg-white text-gray-800 dark:bg-gray-700/50 dark:text-gray-400 rounded-lg text-sm border-t-2 border-gray-300 dark:border-transparent dark:border-none'>
@@ -92,7 +92,7 @@ const ChatInput: React.FC<Props> = ({ chatId }) => {
 
             <div className='sm:hidden'>
                 {/* MODEL SELECTION */}
-             
+                <ModelSelection />
             </div>
         </div>
     );
